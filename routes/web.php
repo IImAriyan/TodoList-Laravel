@@ -18,5 +18,5 @@ use App\Models\Todo;
 Route::get('/', function () {
     $todos =Todo::all();
 
-    return response()->json($todos);
+    return response()->json($todos)->setStatusCode(200)->header('Content-Type');
 });
