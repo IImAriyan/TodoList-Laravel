@@ -56,3 +56,19 @@ Route::get('/api/todos/{id}' , function ($id) {
     }
     return response()->json(["id"=>$todo->id, "title" => $todo->title, "description" => $todo->description, "created_at" => $todo->created_at, "updated_at"=>$todo->updated_at])->setStatusCode(200);
 });
+
+// delete user by id
+Route::post('/api/todos/delete/{id}',function ($id) {
+    $todo = DB::table('todos')->where([
+        'id' => $id,
+    ])->first();
+
+    if ($todo == null) {
+        return response()->json(["message" => "Todo not found", "status" => 404])->setStatusCode(401);
+    }
+
+    DB::table('todos')->delete([
+        'id' => $id,
+    ]);
+    return response()->json(["message" => "Todo Successfully Deleted", "status" => 200])->setStatusCode(200);
+});
