@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Todo;
 use Illuminate\Support\Facades\DB;
+use \App\Controllers\TodoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,86 +16,24 @@ use Illuminate\Support\Facades\DB;
 */
 
 
+Route::get('/', function () {
+    $todos = Todo::all();
+    return view('welcome',compact('todos'));
+});
+
+# Start Routes
+
+
 // Get All Todos
-Route::get('/api/todos/list', function () {
-    $todos =Todo::all();
-
-    return response()->json($todos)->setStatusCode(200);
-});
-
+Route::get('/api/todos/list',[TodoController::class,'getAllTodos']);
 // Add Todos
-Route::post('/api/todos/add' , function () {
-    $data = request()->validate([
-        'title' => 'required',
-        'description' => 'required',
-    ]);
-    DB::table('todos')->insert([
-        'title' => $data['title'],
-        'description' => $data['description'],
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-    return response()->json(["title" => $data['title'], "description" => $data['title'], "message" => "User Successfully Added", "status" => 200])->
-    setStatusCode(200)->
-    header('Access-Control-Allow-Origin', '*')->
-    header('Access-Control-Allow-Methods', '*')->
-    header('Access-Control-Allow-Headers', '*')->
-    header('Content-Type', 'application/json');
-
-}) ;
-
+Route::post('/api/todos/add', [TodoController::class,'addTodo']) ;
 // read By ID And Return User
-
-Route::get('/api/todos/{id}' , function ($id) {
-
-    $todo = DB::table('todos')->where([
-        'id' => $id,
-    ])->first();
-
-    if ($todo == null) {
-        return response()->json(["message" => "User not found", "status" => 404])->setStatusCode(401);
-    }
-    return response()->json(["id"=>$todo->id, "title" => $todo->title, "description" => $todo->description, "created_at" => $todo->created_at, "updated_at"=>$todo->updated_at])->setStatusCode(200);
-});
-
+Route::get('/api/todos/{id}' ,[TodoController::class,'readUserByID']);
 // delete user by id
-Route::post('/api/todos/delete/{id}',function ($id) {
-    $todo = DB::table('todos')->where([
-        'id' => $id,
-    ])->first();
-
-    if ($todo == null) {
-        return response()->json(["message" => "Todo not found", "status" => 404])->setStatusCode(401);
-    }
-
-    DB::table('todos')->delete([
-        'id' => $id,
-    ]);
-    return response()->json(["message" => "Todo Successfully Deleted", "status" => 200])->setStatusCode(200);
-});
-
-
+Route::post('/api/todos/delete/{id}',[TodoController::class,'deleteTodo']);
 // update user by id
-Route::post('/api/todos/update/{id}', function($id) {
-    $todo = DB::table('todos')->where([
-        'id' => $id,
-    ])->first();
-
-    $data = request()->validate([
-        'title' => 'required',
-        'description' => 'required',
-    ]);
-
-    if ($todo == null) {
-        return response()->json(["message" => "Todo not found", "status" => 404])->setStatusCode(401);
-    }
+Route::post('/api/todos/update/{id}', [TodoController::class,'updateTodoByID']);
 
 
-    DB::table('todos')->where(["id"=>$id])->update([
-        'updated_at' => now(),
-        'title' => $data['title'],
-        'description' => $data['description'],
-    ]);
-
-    return response()->json(["message" => "Todo Successfully Updated", "status" => 200])->setStatusCode(200);
-});
+# End Routes
