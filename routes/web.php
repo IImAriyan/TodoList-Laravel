@@ -34,7 +34,7 @@ Route::post('/api/todos/add' , function () {
         'created_at' => now(),
         'updated_at' => now(),
     ]);
-    return response()->json(["title" => $data['title'], "description" => $data['title']])->
+    return response()->json(["title" => $data['title'], "description" => $data['title'], "message" => "User Successfully Added", "status" => 200])->
     setStatusCode(200)->
     header('Access-Control-Allow-Origin', '*')->
     header('Access-Control-Allow-Methods', '*')->
@@ -42,3 +42,17 @@ Route::post('/api/todos/add' , function () {
     header('Content-Type', 'application/json');
 
 }) ;
+
+// read By ID And Return User
+
+Route::get('/api/todos/{id}' , function ($id) {
+
+    $todo = DB::table('todos')->where([
+        'id' => $id,
+    ])->first();
+
+    if ($todo == null) {
+        return response()->json(["message" => "User not found", "status" => 404])->setStatusCode(401);
+    }
+    return response()->json(["id"=>$todo->id, "title" => $todo->title, "description" => $todo->description, "created_at" => $todo->created_at, "updated_at"=>$todo->updated_at])->setStatusCode(200);
+});
