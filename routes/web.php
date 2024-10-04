@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Models\Todo;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+// Get All Todos
 Route::get('/', function () {
-    return response()->json(['message'=>'Welcome To My Laravel App']);
+    $todos =Todo::all();
+
+    return response()->json($todos);
 });
