@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Todo;
+use Illuminate\Support\Facades\DB;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,8 +16,29 @@ use App\Models\Todo;
 
 
 // Get All Todos
-Route::get('/', function () {
+Route::get('/api/todos/list', function () {
     $todos =Todo::all();
 
-    return response()->json($todos)->setStatusCode(200)->header('Content-Type');
+    return response()->json($todos)->setStatusCode(200);
 });
+
+// Add Todos
+Route::post('/api/todos/add' , function () {
+    $data = request()->validate([
+        'title' => 'required',
+        'description' => 'required',
+    ]);
+    DB::table('todos')->insert([
+        'title' => $data['title'],
+        'description' => $data['description'],
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+    return response()->json(["title" => $data['title'], "description" => $data['title']])->
+    setStatusCode(200)->
+    header('Access-Control-Allow-Origin', '*')->
+    header('Access-Control-Allow-Methods', '*')->
+    header('Access-Control-Allow-Headers', '*')->
+    header('Content-Type', 'application/json');
+
+}) ;
