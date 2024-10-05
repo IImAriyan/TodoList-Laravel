@@ -57,7 +57,11 @@ class TodoController extends Controller
         DB::table('todos')->delete([
             'id' => $id,
         ]);
-        return response()->json(["message" => "Todo Successfully Deleted", "status" => 200])->setStatusCode(200);
+        return response()->json(["message" => "Todo Successfully Deleted", "status" => 200])->
+        setStatusCode(200)->
+        header('Access-Control-Allow-Origin', '*')->
+        header('Access-Control-Allow-Methods', '*')->
+        header('Access-Control-Allow-Headers', '*');
     }
 
     public function updateTodoByID($id)
@@ -83,5 +87,10 @@ class TodoController extends Controller
         ]);
 
         return response()->json(["message" => "Todo Successfully Updated", "status" => 200])->setStatusCode(200);
+    }
+    public function refreshTodo()
+    {
+        $todos = Todo::all();
+        return view('welcomes',compact('todos'));
     }
 }

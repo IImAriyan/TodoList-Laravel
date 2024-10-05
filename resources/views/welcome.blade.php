@@ -30,6 +30,12 @@
                 outline: none;
                 background: #fd3939;
                 border: none;
+                transition: all 300ms;
+                cursor: pointer;
+            }
+
+            .minus:hover {
+                background: #ff6d6d;
             }
             .item {
                 border-radius: 5px;
@@ -44,6 +50,11 @@
                 border: none;
                 align-items: center;
 
+            }
+            .message {
+                text-align: center;
+                font-weight: 900;
+                color: white;
             }
         </style>
     </head>
@@ -62,16 +73,16 @@
                     </svg>
                 </div>
 
-                <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
+                <div class="pr mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
                     <div class="grid grid-cols-1 md:grid-cols-1">
 
                         <div class="p-6">
                             @foreach($todos as $todo)
-                                <div class="bg-gray-600 text-white dark:bg-gray-900 item">
+                                <div id="{{$todo->id}}" class="bg-gray-600 text-white dark:bg-gray-900 item">
                                     <div>
                                         {{$todo->title}}
                                     </div>
-                                    <div onclick="alert('kireAsb')" class="minus ark:bg-gray-900">
+                                    <div onclick="deleteTodo({{$todo->id}})" class="minus ">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                                     </div>
                                 </div>
@@ -107,5 +118,31 @@
                 </div>
             </div>
         </div>
+    <script>
+            function deleteTODOs(id) {
+                document.getElementById(id.toString()).style.display = 'none'
+            }
+
+        function createMessage(message) {
+            const parentElement = document.querySelector(".pr")
+            const newElement = document.createElement("h3")
+            newElement.textContent = message.toString()
+            newElement.classList.add("message")
+            parentElement.appendChild(newElement)
+            setTimeout(()=>{
+                newElement.remove()
+            },5000)
+        }
+
+        function deleteTodo(id) {
+           fetch(`/api/todos/delete/${id}`,{
+               method:"POST",
+           }).then(
+               createMessage("Todo Successfully Deleted")
+           ).then(
+               deleteTODOs(id)
+           )
+        }
+    </script>
     </body>
 </html>

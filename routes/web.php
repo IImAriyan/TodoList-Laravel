@@ -34,6 +34,6 @@ Route::get('/api/todos/{id}' ,[TodoController::class,'readUserByID']);
 Route::post('/api/todos/delete/{id}',[TodoController::class,'deleteTodo']);
 // update user by id
 Route::post('/api/todos/update/{id}', [TodoController::class,'updateTodoByID']);
-
-
+// Refresh Todos
+Route::get('/api/todos/refresh',[TodoController::class,'refreshTodo']);
 # End Routes
